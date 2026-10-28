@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
-import { CONTENT, FeatureChip } from '../content.ts';
-import PinnedPhone from './PinnedPhone.tsx';
+import { CONTENT, FeatureChip } from '../content';
+import PinnedPhone from './PinnedPhone';
 
 export const AppFeaturesSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);

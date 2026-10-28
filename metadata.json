@@ -1,6 +1,0 @@
-{
-  "name": "Zozoto - Food Delivery App",
-  "description": "Your city's favourite food delivery app. Fresh meals from local kitchens, delivered in minutes on the Zozoto app.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

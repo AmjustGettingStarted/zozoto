@@ -1,8 +1,10 @@
+'use client';
+
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'motion/react';
 import QRCode from 'qrcode';
-import { CONTENT } from '../content.ts';
-import StoreBadge from './StoreBadge.tsx';
+import { CONTENT } from '../content';
+import StoreBadge from './StoreBadge';
 
 export const DownloadSection: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);

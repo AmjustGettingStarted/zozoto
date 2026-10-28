@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'motion/react';
-import { CONTENT } from '../content.ts';
-import CurvedDivider from './CurvedDivider.tsx';
+import { CONTENT } from '../content';
+import CurvedDivider from './CurvedDivider';
 
 // Embossed Gold Coin Component with 3D Radial Gradients & Crown Emblem
 const GoldCoin: React.FC<{

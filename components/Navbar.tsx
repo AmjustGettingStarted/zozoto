@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, AnimatePresence } from 'motion/react';
-import { useLenis } from '../lib/lenis.tsx';
+import { useLenis } from '../lib/lenis';
 
 export const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
