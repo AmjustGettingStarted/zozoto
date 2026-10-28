@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
+import { fontDisplay, fontBody, fontAccent } from '@/lib/fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Zozoto - Food Delivery App',
+  title: 'Zozoto — Food Delivery App',
   description:
-    "Your city's favourite food delivery app. Fresh meals from local kitchens, delivered in minutes on the Zozoto app.",
+    "Your city's favourite food delivery app. Fresh meals from local kitchens, delivered in minutes.",
   openGraph: {
-    title: 'Zozoto - Food Delivery App',
+    title: 'Zozoto — Food Delivery App',
     description:
-      "Your city's favourite food delivery app. Fresh meals from local kitchens, delivered in minutes on the Zozoto app.",
+      "Your city's favourite food delivery app. Fresh meals from local kitchens, delivered in minutes.",
     type: 'website',
   },
   twitter: {
@@ -25,10 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
-      <body className="bg-[#0B0B0C] text-[#0B0B0C] antialiased selection:bg-[#FF5B2E] selection:text-white overflow-x-hidden">
-        {children}
-      </body>
+    <html
+      lang="en"
+      className={`${fontDisplay.variable} ${fontBody.variable} ${fontAccent.variable}`}
+    >
+      <body className="overflow-x-hidden antialiased">{children}</body>
     </html>
   );
 }

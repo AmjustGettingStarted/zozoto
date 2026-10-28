@@ -5,7 +5,10 @@ import Lenis from 'lenis';
 
 interface LenisContextValue {
   lenis: Lenis | null;
-  scrollTo: (target: string | number | HTMLElement, options?: Record<string, unknown>) => void;
+  scrollTo: (
+    target: string | number | HTMLElement,
+    options?: Record<string, unknown>
+  ) => void;
 }
 
 const LenisContext = createContext<LenisContextValue>({
@@ -15,16 +18,17 @@ const LenisContext = createContext<LenisContextValue>({
 
 export const useLenis = () => useContext(LenisContext);
 
-export const LenisProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const LenisProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [lenisInstance, setLenisInstance] = useState<Lenis | null>(null);
   const reqIdRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Disable smooth scrolling if user prefers reduced motion
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      return;
-    }
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    if (prefersReducedMotion) return;
 
     const lenis = new Lenis({
       lerp: 0.09,
@@ -45,14 +49,15 @@ export const LenisProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     reqIdRef.current = requestAnimationFrame(raf);
 
     return () => {
-      if (reqIdRef.current) {
-        cancelAnimationFrame(reqIdRef.current);
-      }
+      if (reqIdRef.current) cancelAnimationFrame(reqIdRef.current);
       lenis.destroy();
     };
   }, []);
 
-  const scrollTo = (target: string | number | HTMLElement, options?: Record<string, unknown>) => {
+  const scrollTo = (
+    target: string | number | HTMLElement,
+    options?: Record<string, unknown>
+  ) => {
     if (lenisInstance) {
       lenisInstance.scrollTo(target, options);
     } else if (typeof target === 'string') {
