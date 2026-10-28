@@ -10,30 +10,30 @@ export interface CountUpProps {
   suffix?: string;
   displayOverride?: string;
   className?: string;
-  separator?: string;
+  compact?: boolean;
 }
 
 export const CountUp: React.FC<CountUpProps> = ({
   end,
-  duration = 2000,
+  duration = 1800,
   prefix = '',
   suffix = '',
   displayOverride,
   className = '',
-  separator = ',',
+  compact = false,
 }) => {
-  const [current, setCurrent] = useState<number>(0);
-  const [hasCompleted, setHasCompleted] = useState<boolean>(false);
+  const [val, setVal] = useState<number>(0);
+  const [completed, setCompleted] = useState<boolean>(false);
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: '-40px' });
+  const isInView = useInView(ref, { once: true, margin: '-60px' });
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (!isInView) return;
 
     if (shouldReduceMotion) {
-      setCurrent(end);
-      setHasCompleted(true);
+      setVal(end);
+      setCompleted(true);
       return;
     }
 
@@ -43,43 +43,50 @@ export const CountUp: React.FC<CountUpProps> = ({
     const step = (timestamp: number) => {
       if (!startTimestamp) startTimestamp = timestamp;
       const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-
-      // Ease out expo for natural mechanical feel
-      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
-      const val = Math.floor(easeProgress * end);
-
-      setCurrent(val);
+      // Smooth cubic-out curve
+      const ease = 1 - Math.pow(1 - progress, 3);
+      
+      setVal(ease * end);
 
       if (progress < 1) {
         animId = requestAnimationFrame(step);
       } else {
-        setCurrent(end);
-        setHasCompleted(true);
+        setVal(end);
+        setCompleted(true);
       }
     };
 
     animId = requestAnimationFrame(step);
-
-    return () => {
-      cancelAnimationFrame(animId);
-    };
+    return () => cancelAnimationFrame(animId);
   }, [isInView, end, duration, shouldReduceMotion]);
 
-  const formattedNumber = current.toLocaleString('en-US');
-
-  if (displayOverride && hasCompleted) {
+  if (completed && displayOverride) {
     return (
-      <span ref={ref} className={className}>
+      <span ref={ref} className={`tabular-nums ${className}`}>
         {prefix}{displayOverride}
       </span>
     );
   }
 
+  // Format during counting
+  let formatted: string;
+  if (end >= 1_000_000_000 || displayOverride?.includes('B')) {
+    const billions = val / 1_000_000_000;
+    formatted = `${billions.toFixed(1)}B`;
+  } else if (compact || end >= 1_000_000) {
+    const millions = val / 1_000_000;
+    formatted = `${millions.toFixed(1)}M`;
+  } else if (end >= 10_000) {
+    // Round to nearest hundred during animation so it doesn't look jittery
+    const rounded = completed ? Math.round(val) : Math.floor(val / 100) * 100;
+    formatted = rounded.toLocaleString('en-US');
+  } else {
+    formatted = Math.floor(val).toLocaleString('en-US');
+  }
+
   return (
-    <span ref={ref} className={className}>
-      {prefix}
-      {formattedNumber}
-      {suffix}
+    <span ref={ref} className={`tabular-nums ${className}`}>
+      {prefix}{formatted}{suffix}
     </span>
   );
 };
