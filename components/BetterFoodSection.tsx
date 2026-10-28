@@ -1,8 +1,10 @@
+'use client';
+
 import React from 'react';
 import { motion } from 'motion/react';
-import { CONTENT } from '../content.ts';
-import FoodCutouts from './FoodCutouts.tsx';
-import CountUp from './CountUp.tsx';
+import { CONTENT } from '../content';
+import FoodCutouts from './FoodCutouts';
+import CountUp from './CountUp';
 
 export const BetterFoodSection: React.FC = () => {
   return (

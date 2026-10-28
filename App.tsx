@@ -3,16 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+'use client';
+
 import React from 'react';
-import { LenisProvider, useLenis } from './lib/lenis.tsx';
-import Navbar from './components/Navbar.tsx';
-import HeroSection from './components/HeroSection.tsx';
-import BetterFoodSection from './components/BetterFoodSection.tsx';
-import AppFeaturesSection from './components/AppFeaturesSection.tsx';
-import EliteSection from './components/EliteSection.tsx';
-import EcosystemSection from './components/EcosystemSection.tsx';
-import DownloadSection from './components/DownloadSection.tsx';
-import FooterSection from './components/FooterSection.tsx';
+import { LenisProvider, useLenis } from './lib/lenis';
+import Navbar from './components/Navbar';
+import HeroSection from './components/HeroSection';
+import BetterFoodSection from './components/BetterFoodSection';
+import AppFeaturesSection from './components/AppFeaturesSection';
+import EliteSection from './components/EliteSection';
+import EcosystemSection from './components/EcosystemSection';
+import DownloadSection from './components/DownloadSection';
+import FooterSection from './components/FooterSection';
 
 function MainContent() {
   const { scrollTo } = useLenis();

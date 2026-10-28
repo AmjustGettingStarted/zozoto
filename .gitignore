@@ -1,8 +1,28 @@
 node_modules/
+
+# Next.js
+.next/
+out/
+
+# Build and test output
 build/
 dist/
 coverage/
+*.tsbuildinfo
+
+# Local tooling and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
 .DS_Store
+Thumbs.db
+
+# Logs
 *.log
+
+# Local environment files
 .env*
 !.env.example

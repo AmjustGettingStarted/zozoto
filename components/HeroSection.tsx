@@ -1,7 +1,9 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
-import { CONTENT } from '../content.ts';
-import StoreBadge from './StoreBadge.tsx';
+import { CONTENT } from '../content';
+import StoreBadge from './StoreBadge';
 
 export const HeroSection: React.FC<{ onScrollClick?: () => void }> = ({ onScrollClick }) => {
   const containerRef = useRef<HTMLDivElement>(null);

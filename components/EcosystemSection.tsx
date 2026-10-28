@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform, useSpring, useReducedMotion } from 'motion/react';
-import { CONTENT, EcosystemCard } from '../content.ts';
+import { CONTENT, EcosystemCard } from '../content';
 
 // 3D Tilt Card Component
 const TiltCard: React.FC<{

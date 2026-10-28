@@ -1,6 +1,6 @@
 import React from 'react';
-import { CONTENT } from '../content.ts';
-import StoreBadge from './StoreBadge.tsx';
+import { CONTENT } from '../content';
+import StoreBadge from './StoreBadge';
 
 export const FooterSection: React.FC = () => {
   // Render clean inline SVG social icons
