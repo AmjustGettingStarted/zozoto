@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'motion/react';
+import { motion, useScroll, useTransform, useMotionTemplate, useReducedMotion } from 'motion/react';
 import { CONTENT } from '@/lib/content';
 import { EASE } from '@/lib/motion';
 import StoreBadge from './StoreBadge';
@@ -13,180 +13,210 @@ export const HeroSection: React.FC<{ onScrollClick?: () => void }> = ({ onScroll
 
   // Active clip cycling
   const [activeClipIndex, setActiveClipIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(true);
-
+  const [clipProgress, setClipProgress] = useState(0);
   const clips = CONTENT.hero.clips;
+  const CLIP_DURATION = 4500; // ms
 
   useEffect(() => {
-    if (!isPlaying) return;
+    const startTime = Date.now();
     const interval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(1, (elapsed % CLIP_DURATION) / CLIP_DURATION);
+      setClipProgress(progress);
+    }, 50);
+
+    const clipTimer = setInterval(() => {
       setActiveClipIndex((prev) => (prev + 1) % clips.length);
-    }, 4000);
+    }, CLIP_DURATION);
 
-    return () => clearInterval(interval);
-  }, [isPlaying, clips.length]);
+    return () => {
+      clearInterval(interval);
+      clearInterval(clipTimer);
+    };
+  }, [clips.length]);
 
-  // Scroll parallax bindings
+  // Scroll parallax & frame shrink
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end start'],
   });
 
-  const videoY = useTransform(scrollYProgress, [0, 1], ['0%', '22%']);
-  const videoScale = useTransform(scrollYProgress, [0, 1], [1.0, 1.1]);
-  const textY = useTransform(scrollYProgress, [0, 0.75], ['0px', '-100px']);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  // Shrink into inset rounded card
+  const insetVw = useTransform(scrollYProgress, [0, 0.85], [0, 4.5]);
+  const cornerRadius = useTransform(scrollYProgress, [0, 0.85], [0, 40]);
+  const clipPathStyle = useMotionTemplate`inset(${insetVw}vw round ${cornerRadius}px)`;
+
+  const headlineY = useTransform(scrollYProgress, [0, 0.7], [0, -100]);
+  const headlineOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
+  const bottomBarOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+
+  const activeClip = clips[activeClipIndex];
+  const clipNumber = String(activeClipIndex + 1).padStart(2, '0');
+  const totalClips = String(clips.length).padStart(2, '0');
 
   return (
     <section
       ref={containerRef}
       id="hero"
-      className="relative w-full h-screen min-h-[720px] overflow-hidden bg-[#0B0B0C] flex items-center justify-center select-none"
+      className="relative w-full h-[120vh] min-h-[780px] bg-[#0E0B09] text-white select-none sticky top-0 z-10"
     >
-      {/* Background Cinematic Ken-Burns Crossfading Layer */}
+      {/* Outer Viewport Wrapper with Dynamic Scroll Inset */}
       <motion.div
-        style={shouldReduceMotion ? {} : { y: videoY, scale: videoScale }}
-        className="absolute inset-0 w-full h-full"
+        style={shouldReduceMotion ? {} : { clipPath: clipPathStyle }}
+        className="relative w-full h-screen min-h-[720px] overflow-hidden bg-[#0E0B09] flex flex-col justify-between film-grain"
       >
-        {clips.map((clip, index) => {
-          const isActive = index === activeClipIndex;
-          return (
-            <div
-              key={clip.id}
-              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-                isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
-              }`}
-            >
+        {/* Ken-Burns Video/Image Crossfade Slideshow */}
+        <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+          {clips.map((clip, index) => {
+            const isActive = index === activeClipIndex;
+            return (
               <div
-                className={`w-full h-full bg-cover bg-center transition-transform duration-[7000ms] ease-out ${
-                  isActive && !shouldReduceMotion ? 'scale-108' : 'scale-100'
+                key={clip.id}
+                className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+                  isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
                 }`}
-                style={{
-                  backgroundImage: `url(${clip.posterUrl})`,
-                }}
-              />
-            </div>
-          );
-        })}
+              >
+                <div
+                  className={`w-full h-full bg-cover bg-center transition-transform duration-[6000ms] ease-out ${
+                    isActive && !shouldReduceMotion ? 'scale-108' : 'scale-100'
+                  }`}
+                  style={{ backgroundImage: `url(${clip.posterUrl})` }}
+                />
+              </div>
+            );
+          })}
 
-        {/* Sophisticated Dual Gradient Mask for Text Legibility & Depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-[#0B0B0C] z-20" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(11,11,12,0.8)_100%)] z-20" />
-      </motion.div>
+          {/* Deep Cinematic Editorial Gradients: Ink vignette + bottom shadow */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0E0B09] via-[#0E0B09]/45 to-black/60 z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,91,46,0.18)_0%,transparent_60%)] z-10" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(14,11,9,0.95)_0%,transparent_70%)] z-10" />
+        </div>
 
-      {/* Floating Ambient Brand Flame Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-[#FF5B2E]/18 blur-[160px] rounded-full pointer-events-none z-20" />
-
-      {/* Hero Content Stack */}
-      <motion.div
-        style={shouldReduceMotion ? {} : { y: textY, opacity: textOpacity }}
-        className="relative z-30 max-w-4xl mx-auto px-6 sm:px-8 text-center flex flex-col items-center pt-16 sm:pt-12"
-      >
-        {/* Curated Category Eyebrow Pill */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: EASE.out }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-white/90 text-xs font-semibold tracking-wider uppercase mb-6"
-        >
-          <span className="w-2 h-2 rounded-full bg-[#FF5B2E] animate-pulse" />
-          <span>Curated Dining & Delivery</span>
-        </motion.div>
-
-        {/* H1 Headline with Editorial Serif Accent ("favourite" in Instrument Serif) */}
-        <motion.h1
-          initial={{ opacity: 0, y: 35 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.12, ease: EASE.out }}
-          className="font-extrabold text-white text-4xl sm:text-6xl md:text-7xl lg:text-[76px] leading-[1.05] tracking-tight max-w-3xl drop-shadow-xl text-balance font-[family-name:var(--font-display)]"
-        >
-          Your city&apos;s{' '}
-          <span className="font-[family-name:var(--font-accent)] italic font-normal text-white/95 tracking-normal px-1">
-            favourite
-          </span>
-          <br className="hidden sm:inline" />
-          food delivery app
-        </motion.h1>
-
-        {/* Subtext */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.28, ease: EASE.out }}
-          className="mt-6 text-base sm:text-lg md:text-xl text-neutral-300 max-w-2xl font-normal leading-relaxed drop-shadow"
-        >
-          {CONTENT.hero.subtext}
-        </motion.p>
-
-        {/* Store Badges with Magnetic Physics */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: EASE.out }}
-          className="mt-8 sm:mt-10 flex flex-wrap items-center justify-center gap-4 sm:gap-5"
-        >
-          <Magnetic intensity={0.15}>
-            <StoreBadge platform="google-play" />
-          </Magnetic>
-          <Magnetic intensity={0.15}>
-            <StoreBadge platform="app-store" />
-          </Magnetic>
-        </motion.div>
-
-        {/* Clip Progress Dots Indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.65, duration: 0.6 }}
-          className="mt-8 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10"
-        >
-          {clips.map((clip, idx) => (
+        {/* TOP BAR / ROTATING BADGE */}
+        <div className="relative z-30 w-full pt-24 sm:pt-28 px-6 sm:px-12 lg:px-16 flex items-start justify-end">
+          {/* Top-Right: 120px Circular Rotating Text Badge with Arrow in Center */}
+          <Magnetic intensity={0.3}>
             <button
-              key={clip.id}
-              onClick={() => {
-                setActiveClipIndex(idx);
-                setIsPlaying(false);
-              }}
-              className={`h-1.5 rounded-full transition-all duration-300 focus:outline-none cursor-pointer ${
-                idx === activeClipIndex ? 'w-6 bg-[#FF5B2E]' : 'w-2 bg-white/30 hover:bg-white/60'
-              }`}
-              title={clip.title}
-              aria-label={`Go to clip ${clip.title}`}
-            />
-          ))}
-          <span className="text-[11px] font-medium text-neutral-300 ml-1.5 hidden sm:inline">
-            {clips[activeClipIndex].title}
-          </span>
-        </motion.div>
-
-        {/* Scroll prompt chevron */}
-        <motion.button
-          onClick={onScrollClick}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.6 }}
-          className="mt-8 sm:mt-10 flex flex-col items-center gap-2 group cursor-pointer focus:outline-none text-neutral-400 hover:text-white transition-colors"
-          aria-label="Scroll down to explore"
-        >
-          <span className="text-[11px] uppercase tracking-widest font-semibold text-neutral-400 group-hover:text-white transition-colors">
-            {CONTENT.hero.scrollPrompt}
-          </span>
-          <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
-            className="w-7 h-7 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[#FF5B2E] transition-colors"
-          >
-            <svg
-              className="w-3.5 h-3.5 text-white group-hover:text-[#FF5B2E] transition-colors"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.2"
-              viewBox="0 0 24 24"
+              onClick={onScrollClick}
+              data-cursor="ORDER"
+              className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full flex items-center justify-center group cursor-pointer focus:outline-none"
+              aria-label="Order Now"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-            </svg>
+              {/* Rotating SVG Ring */}
+              <svg
+                viewBox="0 0 120 120"
+                className="w-full h-full animate-[spin_18s_linear_infinite] group-hover:animate-[spin_8s_linear_infinite] transition-all"
+              >
+                <path
+                  id="orderCirclePath"
+                  d="M 60, 60 m -45, 0 a 45,45 0 1,1 90,0 a 45,45 0 1,1 -90,0"
+                  fill="none"
+                />
+                <text className="text-[10px] sm:text-[11px] font-extrabold tracking-[0.24em] fill-white/90 uppercase">
+                  <textPath href="#orderCirclePath" startOffset="0%">
+                    ORDER NOW • ORDER NOW • ORDER NOW •
+                  </textPath>
+                </text>
+              </svg>
+
+              {/* Central Arrow Button */}
+              <div className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-[#FF5B2E] text-white flex items-center justify-center shadow-[0_4px_20px_rgba(255,91,46,0.6)] group-hover:scale-110 group-hover:bg-[#D93A12] transition-transform duration-300">
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-0.5 group-hover:translate-y-0.5 transition-transform"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+              </div>
+            </button>
+          </Magnetic>
+        </div>
+
+        {/* BOTTOM CONTENT AREA: Left-Aligned Huge Headline + Bottom Metadata Bar */}
+        <div className="relative z-30 w-full px-6 sm:px-12 lg:px-16 pb-8 sm:pb-12 mt-auto">
+          {/* Headline Stack: Left-aligned, 3 lines, ~10vw, line-mask reveal */}
+          <motion.div
+            style={shouldReduceMotion ? {} : { y: headlineY, opacity: headlineOpacity }}
+            className="max-w-6xl"
+          >
+            <h1 className="font-extrabold text-white text-[clamp(2.75rem,8.5vw,9.5rem)] leading-[0.88] tracking-[-0.04em] font-[family-name:var(--font-display)]">
+              {/* Line 1 */}
+              <div className="overflow-hidden">
+                <motion.span
+                  initial={{ y: '105%' }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                  className="block"
+                >
+                  Your city&apos;s
+                </motion.span>
+              </div>
+
+              {/* Line 2 with Serif Italic */}
+              <div className="overflow-hidden">
+                <motion.span
+                  initial={{ y: '105%' }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
+                  className="block font-[family-name:var(--font-accent)] italic font-normal text-[#FF5B2E] pr-3"
+                >
+                  favourite
+                </motion.span>
+              </div>
+
+              {/* Line 3 */}
+              <div className="overflow-hidden">
+                <motion.span
+                  initial={{ y: '105%' }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.34 }}
+                  className="block"
+                >
+                  food delivery app
+                </motion.span>
+              </div>
+            </h1>
           </motion.div>
-        </motion.button>
+
+          {/* Bottom Bar: Store badges left; right side "03 / 05 Velvet Chocolate Cake" with progress line */}
+          <motion.div
+            style={shouldReduceMotion ? {} : { opacity: bottomBarOpacity }}
+            className="mt-8 sm:mt-10 pt-6 border-t border-white/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+          >
+            {/* Store Badges Left */}
+            <div className="flex items-center gap-3.5">
+              <Magnetic intensity={0.15}>
+                <StoreBadge platform="google-play" />
+              </Magnetic>
+              <Magnetic intensity={0.15}>
+                <StoreBadge platform="app-store" />
+              </Magnetic>
+            </div>
+
+            {/* Right side: Clip counter & Title with animated progress line */}
+            <div className="flex flex-col items-start sm:items-end w-full sm:w-auto">
+              <div className="flex items-center gap-3 text-xs sm:text-sm font-mono tracking-wider text-white/90 uppercase">
+                <span className="font-bold text-[#FF5B2E]">{clipNumber}</span>
+                <span className="text-white/40">/</span>
+                <span className="text-white/60">{totalClips}</span>
+                <span className="text-white font-medium pl-1 font-[family-name:var(--font-display)] tracking-normal normal-case">
+                  {activeClip.title}
+                </span>
+              </div>
+
+              {/* Thin progress line that fills per clip */}
+              <div className="w-full sm:w-56 h-[2px] bg-white/20 rounded-full mt-2 overflow-hidden">
+                <div
+                  className="h-full bg-[#FF5B2E] transition-all duration-75 ease-linear rounded-full"
+                  style={{ width: `${clipProgress * 100}%` }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </motion.div>
     </section>
   );

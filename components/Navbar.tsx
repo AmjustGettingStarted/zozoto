@@ -46,8 +46,8 @@ export const Navbar: React.FC = () => {
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className={`pointer-events-auto w-full max-w-4xl flex items-center justify-between px-4 sm:px-6 py-2.5 sm:py-3 rounded-full transition-all duration-300 ${
             isScrolled
-              ? 'bg-[#0B0B0C]/85 backdrop-blur-2xl border border-white/15 shadow-[0_20px_40px_rgba(0,0,0,0.4)]'
-              : 'bg-[#0B0B0C]/60 backdrop-blur-md border border-white/10 shadow-lg'
+              ? 'bg-[#0E0B09]/85 backdrop-blur-2xl border border-white/15 shadow-[0_20px_40px_rgba(0,0,0,0.5)]'
+              : 'bg-[#0E0B09]/60 backdrop-blur-md border border-white/10 shadow-lg'
           }`}
         >
           {/* Brand Logo & Wordmark */}

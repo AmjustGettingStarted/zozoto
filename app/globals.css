@@ -3,21 +3,22 @@
 /* ── Design Tokens ───────────────────────────────────────── */
 
 @theme {
-  /* Brand palette */
+  /* Brand palette: "late-night street food meets editorial magazine" */
   --color-flame: #FF5B2E;
   --color-flame-deep: #D93A12;
-  --color-ink: #0B0B0C;
-  --color-paper: #FAFAF8;
-  --color-blush: #FFF1EB;
-  --color-muted: #6B6B72;
+  --color-ink: #0E0B09;
+  --color-paper: #F5EEE3;
+  --color-cream: #F5EEE3;
+  --color-blush: #FCEFE6;
+  --color-muted: #7E7771;
 
-  /* Gold scale */
+  /* Gold scale (only in Elite) */
   --color-gold: #D4A94A;
   --color-gold-light: #FCE8B3;
   --color-gold-dark: #8C6A1F;
 
   /* Surfaces */
-  --color-surface-dark: #141417;
+  --color-surface-dark: #15110E;
 
   /* Typography — references next/font CSS variables set on <html> */
   --font-family-display: var(--font-display), system-ui, sans-serif;
@@ -25,8 +26,8 @@
   --font-family-accent: var(--font-accent), Georgia, serif;
 
   /* Radius */
-  --radius-section: clamp(24px, 4vw, 48px);
-  --radius-card: 24px;
+  --radius-section: 40px;
+  --radius-card: 28px;
 }
 
 /* ── Base Layer ──────────────────────────────────────────── */
@@ -34,21 +35,81 @@
 @layer base {
   html {
     font-family: var(--font-family-body);
-    color: var(--color-ink);
-    background-color: var(--color-ink);
+    color: #0E0B09;
+    background-color: #0E0B09;
+    font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
+  body {
+    min-width: 320px;
+    overflow-x: hidden;
+    background-color: #0E0B09;
+    color: #0E0B09;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
   ::selection {
-    background-color: var(--color-flame);
+    background-color: #FF5B2E;
     color: white;
   }
 
   /* Headings default to display face */
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-family-display);
+    letter-spacing: -0.035em;
   }
+}
+
+/* ── Editorial Type Clamps ───────────────────────────────── */
+
+.display-huge {
+  font-size: clamp(3.5rem, 11vw, 12rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.display-wordmark {
+  font-size: clamp(4rem, 22vw, 24rem);
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+}
+
+/* ── Outlined Typography Utility ─────────────────────────── */
+
+.text-stroke-ink {
+  -webkit-text-stroke: clamp(1px, 0.2vw, 2.5px) #0E0B09;
+  color: transparent;
+}
+
+.text-stroke-gold {
+  -webkit-text-stroke: clamp(1px, 0.2vw, 2.5px) #D4A94A;
+  color: transparent;
+}
+
+.text-stroke-white {
+  -webkit-text-stroke: clamp(1px, 0.2vw, 2px) rgba(255, 255, 255, 0.25);
+  color: transparent;
+}
+
+/* ── Film Grain Overlay (SVG noise, 6% opacity) ─────────── */
+
+.film-grain {
+  position: relative;
+}
+
+.film-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 25;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 /* ── Lenis Smooth Scrolling ──────────────────────────────── */
@@ -74,14 +135,15 @@ html.lenis body {
   pointer-events: none;
 }
 
-/* ── Gold Gradient Utilities ─────────────────────────────── */
+/* ── Gold Gradient Utilities (Elite only) ────────────────── */
 
 .text-gold-gradient {
   background: linear-gradient(
     135deg,
-    #FCE8B3 0%,
-    #E5BA5A 35%,
-    #C2932E 70%,
+    #FFF4D0 0%,
+    #FCE8B3 20%,
+    #E5BA5A 45%,
+    #C2932E 75%,
     #8C6A1F 100%
   );
   -webkit-background-clip: text;
@@ -93,29 +155,18 @@ html.lenis body {
   background: linear-gradient(135deg, #F6E3A1 0%, #D4A94A 45%, #8C6A1F 100%);
 }
 
-/* ── Elite Section Pattern ───────────────────────────────── */
-
-.elite-pattern {
-  background-color: #050505;
-  background-image: radial-gradient(
-    rgba(212, 169, 74, 0.06) 1px,
-    transparent 1px
-  );
-  background-size: 24px 24px;
-}
-
-/* ── Shadows ─────────────────────────────────────────────── */
-
-.shadow-soft-card {
-  box-shadow:
-    0 20px 40px -15px rgba(11, 11, 12, 0.07),
-    0 0 1px 1px rgba(11, 11, 12, 0.04);
-}
-
 /* ── Tabular Numerals ────────────────────────────────────── */
 
 .tabular-nums {
   font-variant-numeric: tabular-nums;
+}
+
+/* ── Stacked Card Section Shell ──────────────────────────── */
+
+.stacked-card {
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  box-shadow: 0 -25px 60px -15px rgba(0, 0, 0, 0.4);
 }
 
 /* ── Custom Scrollbar ────────────────────────────────────── */
@@ -125,16 +176,16 @@ html.lenis body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-ink);
+  background: #0E0B09;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2A2A30;
+  background: #2D2520;
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-flame);
+  background: #FF5B2E;
 }
 
 /* ── Reduced Motion ──────────────────────────────────────── */
