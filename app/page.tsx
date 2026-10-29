@@ -10,16 +10,20 @@ import EliteSection from '@/components/EliteSection';
 import EcosystemSection from '@/components/EcosystemSection';
 import DownloadSection from '@/components/DownloadSection';
 import FooterSection from '@/components/FooterSection';
+import CustomCursor from '@/components/CustomCursor';
 
 function MainContent() {
   const { scrollTo } = useLenis();
 
   return (
-    <div className="relative min-h-screen bg-[#0B0B0C] text-[#0B0B0C] selection:bg-[#FF5B2E] selection:text-white">
+    <div className="relative min-h-screen bg-[#0E0B09] text-[#0E0B09] selection:bg-[#FF5B2E] selection:text-white">
+      {/* Editorial Custom Cursor on desktop */}
+      <CustomCursor />
+
       {/* Floating Glass Pill Navbar */}
       <Navbar />
 
-      <main className="relative w-full overflow-hidden">
+      <main className="relative w-full">
         {/* Section 1: Hero */}
         <HeroSection onScrollClick={() => scrollTo('#better-food')} />
 

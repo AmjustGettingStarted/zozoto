@@ -70,15 +70,11 @@ export const CountUp: React.FC<CountUpProps> = ({
 
   // Format during counting
   let formatted: string;
-  if (end >= 1_000_000_000 || displayOverride?.includes('B')) {
-    const billions = val / 1_000_000_000;
-    formatted = `${billions.toFixed(1)}B`;
-  } else if (compact || end >= 1_000_000) {
-    const millions = val / 1_000_000;
-    formatted = `${millions.toFixed(1)}M`;
-  } else if (end >= 10_000) {
-    // Round to nearest hundred during animation so it doesn't look jittery
-    const rounded = completed ? Math.round(val) : Math.floor(val / 100) * 100;
+  if (displayOverride && displayOverride.includes('B')) {
+    const billions = (val / 1_000_000_000).toFixed(1);
+    formatted = `${billions}B`;
+  } else if (end >= 100_000) {
+    const rounded = completed ? Math.round(val) : Math.floor(val / 500) * 500;
     formatted = rounded.toLocaleString('en-US');
   } else {
     formatted = Math.floor(val).toLocaleString('en-US');
