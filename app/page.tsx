@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { LenisProvider, useLenis } from '@/lib/lenis';
-import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import BetterFoodSection from '@/components/BetterFoodSection';
 import AppFeaturesSection from '@/components/AppFeaturesSection';
@@ -19,9 +18,6 @@ function MainContent() {
     <div className="relative min-h-screen bg-[#0E0B09] text-[#0E0B09] selection:bg-[#FF5B2E] selection:text-white">
       {/* Editorial Custom Cursor on desktop */}
       <CustomCursor />
-
-      {/* Floating Glass Pill Navbar */}
-      <Navbar />
 
       <main className="relative w-full">
         {/* Section 1: Hero */}
