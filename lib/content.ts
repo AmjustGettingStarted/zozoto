@@ -3,13 +3,6 @@
  * Single source of truth for all marketing copy, tokens, and asset URLs.
  */
 
-export interface FoodClip {
-  id: string;
-  title: string;
-  caption: string;
-  posterUrl: string;
-}
-
 export interface StatItem {
   id: string;
   value: number;
@@ -84,43 +77,7 @@ export const CONTENT = {
     subtext:
       'Order fast, eat happy. Fresh meals from local kitchens, delivered in minutes on the Zozoto app.',
     scrollPrompt: 'Scroll to explore',
-    clips: [
-      {
-        id: 'bread',
-        title: 'Puffed Golden Crust',
-        caption: 'Crispy fried bread torn fresh from the flame',
-        posterUrl:
-          'https://images.unsplash.com/photo-1541518763669-27fef04b14ea?auto=format&fit=crop&w=1920&q=80',
-      },
-      {
-        id: 'noodles',
-        title: 'Wok-Tossed Noodles',
-        caption: 'Hand-pulled noodles kissed by high-heat smoky wok hei',
-        posterUrl:
-          'https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=1920&q=80',
-      },
-      {
-        id: 'spice',
-        title: 'Slow-Mo Spice Dust',
-        caption: 'Roasted cumin and crimson paprika dancing over sizzling bowls',
-        posterUrl:
-          'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1920&q=80',
-      },
-      {
-        id: 'pizza',
-        title: 'Cheesy Sourdough Pull',
-        caption: 'Woodfired buffalo mozzarella stretching fresh from the stone',
-        posterUrl:
-          'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1920&q=80',
-      },
-      {
-        id: 'cake',
-        title: 'Velvet Chocolate Cake',
-        caption: 'A silver fork slicing into warm molten dark cocoa ganache',
-        posterUrl:
-          'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1920&q=80',
-      },
-    ] as FoodClip[],
+    videoSrc: '/videos/hero-showreel.mp4',
   },
 
   betterFood: {
