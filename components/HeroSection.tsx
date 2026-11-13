@@ -52,10 +52,14 @@ export const HeroSection: React.FC<{ onScrollClick?: () => void }> = ({ onScroll
         style={shouldReduceMotion ? {} : { clipPath: clipPathStyle }}
         className="relative w-full h-screen min-h-[720px] overflow-hidden bg-[#0E0B09] flex flex-col justify-between film-grain"
       >
-        <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
+        {/* Background Video Layer — 100% natural brightness & vibrancy */}
+        <div
+          className="absolute inset-0 w-full h-full pointer-events-none z-0 bg-cover bg-center [background-size:cover]"
+          aria-hidden="true"
+        >
           <video
             ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover [background-size:cover]"
             style={{ transform: 'scale(1.35)' }}
             src={CONTENT.hero.videoSrc}
             autoPlay={!shouldReduceMotion}
@@ -65,10 +69,21 @@ export const HeroSection: React.FC<{ onScrollClick?: () => void }> = ({ onScroll
             preload="auto"
             aria-hidden
           />
+        </div>
 
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0E0B09]/90 via-[#0E0B09]/20 to-black/30 z-10" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,91,46,0.12)_0%,transparent_60%)] z-10" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(14,11,9,0.55)_0%,transparent_70%)] z-10" />
+        {/* Separate Gradient Overlay — preserves video vibrancy while guaranteeing crisp text contrast */}
+        <div
+          className="absolute inset-0 pointer-events-none z-10"
+          aria-hidden="true"
+        >
+          {/* Smooth bottom-to-top gradient protecting headline, subtext, and store badges */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0E0B09] via-[#0E0B09]/45 via-45% to-transparent" />
+
+          {/* Targeted left-edge vignette behind the editorial typography */}
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0E0B09]/80 via-[#0E0B09]/25 via-40% to-transparent" />
+
+          {/* Subtle brand warm ambient glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,91,46,0.1)_0%,transparent_60%)]" />
         </div>
 
         <div className="relative z-30 w-full pt-8 sm:pt-10 px-6 sm:px-12 lg:px-16 flex items-start justify-end">
