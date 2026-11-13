@@ -75,7 +75,7 @@ export const CONTENT = {
     h1Accent: 'favourite',
     h1Line2: 'food delivery app',
     subtext:
-      'Order fast, eat happy. Fresh meals from local kitchens, delivered in minutes on the Zozoto app.',
+      'From local favourites to trending picks — get it delivered, fresh and fast.',
     scrollPrompt: 'Scroll to explore',
     videoSrc: '/videos/hero-showreel.mp4',
   },
