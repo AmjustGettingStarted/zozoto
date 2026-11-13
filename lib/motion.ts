@@ -1,5 +1,5 @@
 /**
- * Zozoto — Shared Motion System
+ * Zozoto - Shared Motion System
  * Single source of truth for all animation tokens.
  * Every component imports from here.
  */
