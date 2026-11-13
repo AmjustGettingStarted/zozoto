@@ -51,7 +51,7 @@ export const DownloadSection: React.FC = () => {
     <section
       ref={containerRef}
       id="download"
-      className="relative w-full bg-[#FAFAF8] text-[#0B0B0C] py-20 sm:py-28 px-4 sm:px-8 overflow-hidden z-20"
+      className="relative w-full bg-[#FAFAF8] text-[#0B0B0C] py-20 sm:py-28 px-4 sm:px-8 overflow-hidden z-20 stacked-card -mt-12"
     >
       <div className="max-w-6xl mx-auto">
         {/* Large Blush Hero Card */}

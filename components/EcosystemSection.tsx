@@ -60,13 +60,7 @@ export const EcosystemSection: React.FC = () => {
   return (
     <section
       id="ecosystem"
-      className="relative w-full bg-[#FAFAF8] text-[#0B0B0C] py-28 sm:py-36 px-6 sm:px-10 overflow-hidden z-20"
-      style={{
-        borderTopLeftRadius: 'clamp(32px, 5vw, 64px)',
-        borderTopRightRadius: 'clamp(32px, 5vw, 64px)',
-        marginTop: '-40px',
-        boxShadow: '0 -25px 60px -12px rgba(0, 0, 0, 0.25)',
-      }}
+      className="relative w-full bg-[#FAFAF8] text-[#0B0B0C] py-28 sm:py-36 px-6 sm:px-10 overflow-hidden z-20 stacked-card -mt-12"
     >
       <div className="max-w-6xl mx-auto">
         {/* Editorial Section Header */}
