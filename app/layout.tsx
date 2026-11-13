@@ -3,11 +3,11 @@ import { fontDisplay, fontBody, fontAccent } from '@/lib/fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Zozoto — Food Delivery App',
+  title: 'Zozoto - Food Delivery App',
   description:
     "Your city's favourite food delivery app. Fresh meals from local kitchens, delivered in minutes.",
   openGraph: {
-    title: 'Zozoto — Food Delivery App',
+    title: 'Zozoto - Food Delivery App',
     description:
       "Your city's favourite food delivery app. Fresh meals from local kitchens, delivered in minutes.",
     type: 'website',
