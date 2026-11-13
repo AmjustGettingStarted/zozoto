@@ -179,10 +179,10 @@ export const HeroSection: React.FC<{ onScrollClick?: () => void }> = ({ onScroll
           </motion.div>
         </div>
 
-        {/* Bottom scroll down chevron indicator (bottom-left) */}
+        {/* Bottom scroll down chevron indicator (centered) */}
         <motion.div
           style={shouldReduceMotion ? {} : { opacity: bottomBarOpacity }}
-          className="relative z-30 px-6 sm:px-12 lg:px-16 pb-6 sm:pb-8"
+          className="relative z-30 w-full flex justify-center pb-6 sm:pb-8"
         >
           <button
             onClick={onScrollClick}
