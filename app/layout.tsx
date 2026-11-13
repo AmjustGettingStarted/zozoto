@@ -30,7 +30,7 @@ export default function RootLayout({
       lang="en"
       className={`${fontDisplay.variable} ${fontBody.variable} ${fontAccent.variable}`}
     >
-      <body className="overflow-x-hidden antialiased">{children}</body>
+      <body className="overflow-x-clip antialiased">{children}</body>
     </html>
   );
 }

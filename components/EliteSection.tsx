@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   motion,
   useScroll,
@@ -101,20 +101,44 @@ export const EliteSection: React.FC = () => {
   const coinCloseY = useTransform(scrollYProgress, [0, 1], [-80, 130]);
 
   // Dynamic Phase calculation for content switching
-  // Phase 0: 0.0 - 0.22 -> Wordmark & Intro
-  // Phase 1: 0.22 - 0.44 -> Benefit 01
-  // Phase 2: 0.44 - 0.66 -> Benefit 02
-  // Phase 3: 0.66 - 0.84 -> Benefit 03
-  // Phase 4: 0.84 - 1.0  -> Savings Calculator
+  // Phase 0: 0.0 - 0.20 -> Wordmark & Intro
+  // Phase 1: 0.20 - 0.40 -> Benefit 01
+  // Phase 2: 0.40 - 0.60 -> Benefit 02
+  // Phase 3: 0.60 - 0.80 -> Benefit 03
+  // Phase 4: 0.80 - 1.0  -> Savings Calculator
   const [activePhase, setActivePhase] = useState(0);
 
-  scrollYProgress.on('change', (latest) => {
-    if (latest < 0.24) setActivePhase(0);
-    else if (latest < 0.48) setActivePhase(1);
-    else if (latest < 0.70) setActivePhase(2);
-    else if (latest < 0.86) setActivePhase(3);
-    else setActivePhase(4);
-  });
+  useEffect(() => {
+    const updatePhase = (latest: number) => {
+      if (latest < 0.20) setActivePhase(0);
+      else if (latest < 0.40) setActivePhase(1);
+      else if (latest < 0.60) setActivePhase(2);
+      else if (latest < 0.80) setActivePhase(3);
+      else setActivePhase(4);
+    };
+
+    updatePhase(scrollYProgress.get());
+    const unsubscribe = scrollYProgress.on('change', updatePhase);
+    return () => unsubscribe();
+  }, [scrollYProgress]);
+
+  const scrollToPhase = (targetPhase: number) => {
+    setActivePhase(targetPhase);
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const containerTop = rect.top + scrollTop;
+    const scrollableDistance = containerRef.current.offsetHeight - window.innerHeight;
+
+    // Target positions along the 350vh track for each phase
+    const phaseRatios = [0.06, 0.30, 0.50, 0.70, 0.92];
+    const targetY = containerTop + (phaseRatios[targetPhase] ?? 0) * scrollableDistance;
+
+    window.scrollTo({
+      top: targetY,
+      behavior: 'smooth',
+    });
+  };
 
   const benefits = [
     {
@@ -144,12 +168,17 @@ export const EliteSection: React.FC = () => {
       ref={containerRef}
       id="elite"
       onMouseMove={handleMouseMove}
-      className="relative w-full h-[250vh] bg-[#0E0B09] text-white stacked-card -mt-12 z-20"
+      className="relative w-full bg-[#0E0B09] text-white stacked-card -mt-12 z-20"
     >
-      {/* Sticky Pinned Viewport */}
-      <div className="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between py-12 sm:py-16 px-6 sm:px-12 lg:px-20 film-grain bg-[#0E0B09]">
-        {/* Radial Warm Gold Sheen */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(212,169,74,0.18)_0%,rgba(14,11,9,0.98)_70%)] pointer-events-none z-0" />
+      {/* ── 350vh STICKY CONTAINER (Identical pattern to AppFeaturesSection) ── */}
+      <div className="relative h-[350vh] w-full">
+        {/* Sticky Pinned Viewport */}
+        <div className="sticky top-0 w-full h-screen overflow-hidden flex flex-col justify-between py-12 sm:py-16 px-6 sm:px-12 lg:px-20 bg-[#0E0B09]">
+          {/* Subtle Film Grain Texture Overlay */}
+          <div className="pointer-events-none absolute inset-0 film-grain z-20" />
+
+          {/* Radial Warm Gold Sheen */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(212,169,74,0.18)_0%,rgba(14,11,9,0.98)_70%)] pointer-events-none z-0" />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[800px] h-[450px] bg-[#D4A94A]/10 blur-[180px] rounded-full pointer-events-none z-0" />
 
         {/* ── 5-6 GOLD COINS AT 3 DEPTH LAYERS ─────────────────────────── */}
@@ -267,7 +296,10 @@ export const EliteSection: React.FC = () => {
                 <p className="mt-6 text-lg sm:text-2xl text-neutral-300 font-medium max-w-xl">
                   The ultimate savings club for midnight food lovers.
                 </p>
-                <div className="mt-8 text-xs sm:text-sm font-mono tracking-widest uppercase text-[#D4A94A]/80 flex items-center gap-2">
+                <div
+                  onClick={() => scrollToPhase(1)}
+                  className="mt-8 text-xs sm:text-sm font-mono tracking-widest uppercase text-[#D4A94A]/80 hover:text-[#D4A94A] flex items-center gap-2 cursor-pointer transition-colors"
+                >
                   <span>Scroll to uncover VIP privileges</span>
                   <span>↓</span>
                 </div>
@@ -407,9 +439,11 @@ export const EliteSection: React.FC = () => {
         {/* ── BOTTOM PAGINATION INDICATOR ───────────────────────────────── */}
         <div className="relative z-30 w-full flex items-center justify-center gap-2 pt-4">
           {[0, 1, 2, 3, 4].map((step) => (
-            <div
+            <button
               key={step}
-              onClick={() => setActivePhase(step)}
+              type="button"
+              onClick={() => scrollToPhase(step)}
+              aria-label={`Jump to Elite phase ${step + 1}`}
               className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                 activePhase === step ? 'w-8 bg-[#D4A94A]' : 'w-2 bg-white/20 hover:bg-white/40'
               }`}
@@ -417,7 +451,8 @@ export const EliteSection: React.FC = () => {
           ))}
         </div>
       </div>
-    </section>
+    </div>
+  </section>
   );
 };
 
